@@ -5,7 +5,6 @@ package main
 import (
 	"log"
 	"math"
-	"os"
 	"runtime"
 	"time"
 	"usbkill-go/actions"
@@ -14,7 +13,9 @@ import (
 )
 
 var (
-	conf       = configs.Config{}
+	conf = configs.Config{
+		Action: "poweroff",
+	}
 	getDevices = map[string]func() devices.Device{
 		"darwin": func() devices.Device {
 			usbDarwin := devices.UsbDarwin{}
@@ -54,10 +55,13 @@ func detectChanges(c devices.Device) {
 
 func main() {
 	// initialisation
-	if os.Getuid() != 0 {
-		log.Println("only root")
-		os.Exit(0)
-	}
+	/*
+		if os.Getuid() != 0 {
+			log.Println("only root")
+			os.Exit(0)
+		}
+	*/
+
 	conf.Read()
 	actions.Config = conf
 	actions.Init()

@@ -13,6 +13,7 @@ const configFileName = "usbkill.yml"
 
 type Config struct {
 	DryRun      bool           `yaml:"dry-run"`
+	Action      string         `yaml:"action"`
 	Whitelisted devices.Device `yaml:"whitelisted"`
 
 	/* todo:

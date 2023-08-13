@@ -3,6 +3,7 @@ package devices
 import (
 	"strconv"
 	"strings"
+	"usbkill-go/utils"
 )
 
 const sep = ":"
@@ -48,15 +49,9 @@ func (d Device) Subi(b Device) Device {
 	return d
 }
 
-func deepCopy[T Device](dst, src T) { // inplace
-	for k, v := range src {
-		dst[k] = v
-	}
-}
-
 func (d Device) Sub(b Device) Device {
 	l := make(Device)
-	deepCopy(l, d)
+	utils.DeepCopy(l, d)
 	return l.Subi(b)
 }
 
@@ -84,7 +79,7 @@ func (d Device) Sumi(b Device) Device {
 
 func (d Device) Sum(b Device) Device {
 	l := make(Device)
-	deepCopy(l, d)
+	utils.DeepCopy(l, d)
 	return l.Sumi(b)
 }
 

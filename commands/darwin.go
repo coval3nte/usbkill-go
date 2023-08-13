@@ -20,3 +20,9 @@ func DarwinPowerOff() {
 		log.Fatalln(err)
 	}
 }
+
+func DarwinSleep() {
+	if err := exec.Command("/usr/bin/pmset", "sleepnow").Run(); err != nil {
+		log.Fatalln(err)
+	}
+}

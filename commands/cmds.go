@@ -6,8 +6,10 @@ import (
 )
 
 func GenCmds(dry bool) map[string]func() {
+	dryFun := func() { log.Println("dry run harmless") }
 	def := map[string]func(){
-		"poweroff": func() { log.Println("dry run harmless") },
+		"poweroff": dryFun,
+		"sleep":    dryFun,
 	}
 
 	if dry {
@@ -17,6 +19,7 @@ func GenCmds(dry bool) map[string]func() {
 	switch runtime.GOOS {
 	case `darwin`:
 		def["poweroff"] = DarwinPowerOff
+		def["sleep"] = DarwinSleep
 	}
 	return def
 }
