@@ -3,6 +3,7 @@
 package main
 
 import (
+	"embed"
 	"log"
 	"math"
 	"runtime"
@@ -53,16 +54,12 @@ func detectChanges(c devices.Device) {
 	localDevices = c
 }
 
+//go:embed *.yml
+var fs embed.FS
+
 func main() {
 	// initialisation
-	/*
-		if os.Getuid() != 0 {
-			log.Println("only root")
-			os.Exit(0)
-		}
-	*/
-
-	conf.Read()
+	conf.Read(fs)
 	actions.Config = conf
 	actions.Init()
 

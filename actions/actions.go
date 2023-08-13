@@ -2,6 +2,7 @@ package actions
 
 import (
 	"log"
+	"os"
 	"slices"
 	"usbkill-go/commands"
 	"usbkill-go/configs"
@@ -11,24 +12,24 @@ import (
 
 var (
 	Config configs.Config
-	cmds   map[string]func()
+	cmds   map[string]commands.CmdDesc
 )
 
 func NewDevices(unknownDevices devices.Device) {
 	if Config.HasKillSwitch() {
 		return
 	}
-	cmds[Config.Action]()
+	cmds[Config.Action].Fun()
 }
 
 func MissingDevices(detachedDevices devices.Device) {
 	if Config.HasKillSwitch() {
 		if detachedDevices.Contains(Config.KillSwitch.ProductId, Config.KillSwitch.VendorId) {
-			cmds[Config.Action]()
+			cmds[Config.Action].Fun()
 		}
 		return
 	}
-	cmds[Config.Action]()
+	cmds[Config.Action].Fun()
 }
 
 func Init() {
@@ -36,5 +37,9 @@ func Init() {
 
 	if !slices.Contains(utils.MapKeys(cmds), Config.Action) {
 		log.Fatalln("action", Config.Action, "doesn't exists.\n", "Available actions:", utils.MapKeys(cmds))
+	}
+
+	if cmds[Config.Action].Sudo && os.Geteuid() != 0 {
+		log.Fatalln("action", Config.Action, "needs more privileges")
 	}
 }

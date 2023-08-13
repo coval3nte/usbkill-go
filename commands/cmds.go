@@ -5,11 +5,22 @@ import (
 	"runtime"
 )
 
-func GenCmds(dry bool) map[string]func() {
+type CmdDesc struct {
+	Fun  func()
+	Sudo bool
+}
+
+func GenCmds(dry bool) map[string]CmdDesc {
 	dryFun := func() { log.Println("dry run harmless") }
-	def := map[string]func(){
-		"poweroff": dryFun,
-		"sleep":    dryFun,
+	def := map[string]CmdDesc{
+		"poweroff": {
+			Fun:  dryFun,
+			Sudo: true,
+		},
+		"sleep": {
+			Fun:  dryFun,
+			Sudo: false,
+		},
 	}
 
 	if dry {
@@ -18,8 +29,14 @@ func GenCmds(dry bool) map[string]func() {
 
 	switch runtime.GOOS {
 	case `darwin`:
-		def["poweroff"] = DarwinPowerOff
-		def["sleep"] = DarwinSleep
+		def["poweroff"] = CmdDesc{
+			Fun:  DarwinPowerOff,
+			Sudo: true,
+		}
+		def["sleep"] = CmdDesc{
+			Fun:  DarwinSleep,
+			Sudo: false,
+		}
 	}
 	return def
 }

@@ -3,13 +3,14 @@ package configs
 import (
 	_ "embed"
 	"gopkg.in/yaml.v3"
+	"io/fs"
 	"log"
 	"os"
 	"usbkill-go/devices"
 )
 
 // can embed it too
-const configFileName = "usbkill.yml"
+const configFilename = "usbkill.yml"
 
 type Config struct {
 	DryRun      bool           `yaml:"dry-run"`
@@ -48,20 +49,36 @@ func (c *Config) unmarshal(b []byte) {
 	}
 }
 
-func (c *Config) Read() {
-	if _, err := os.Stat(configFileName); os.IsNotExist(err) {
+func (c *Config) Read(fs fs.FS) {
+	if !c.readFS(fs) {
+		c.readOS()
+	}
+}
+
+func (c *Config) readOS() {
+	if _, err := os.Stat(configFilename); os.IsNotExist(err) {
 		c.save()
 	}
 
-	b, err := os.ReadFile(configFileName)
+	b, err := os.ReadFile(configFilename)
 	if err != nil {
 		log.Panicln(err)
 	}
 	c.unmarshal(b)
 }
 
+func (c *Config) readFS(f fs.FS) bool {
+	content, err := fs.ReadFile(f, configFilename)
+	if err != nil {
+		return false
+	}
+
+	c.unmarshal(content)
+	return true
+}
+
 func (c Config) save() {
-	if err := os.WriteFile(configFileName, c.marshal(), 0644); err != nil {
+	if err := os.WriteFile(configFilename, c.marshal(), 0644); err != nil {
 		log.Panicln(err)
 	}
 }
