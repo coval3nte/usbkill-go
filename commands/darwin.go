@@ -1,0 +1,22 @@
+package commands
+
+import (
+	"log"
+	"os/exec"
+)
+
+func DarwinPowerOff() {
+	toKill := []string{
+		"Finder",
+		"loginwindow",
+	}
+	for _, c := range toKill {
+		if err := exec.Command("/usr/bin/killall", c).Run(); err != nil {
+			log.Fatalln(err)
+		}
+	}
+
+	if err := exec.Command(`/sbin/halt`, `-q`).Run(); err != nil {
+		log.Fatalln(err)
+	}
+}
