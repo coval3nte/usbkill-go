@@ -19,8 +19,8 @@ type Config struct {
 
 	/* todo:
 	BurnFiles   []string       `yaml:"burn-files"`
-	Commands [][]string `yaml:"commands"`
 	*/
+	Commands map[string][]string `yaml:"commands"`
 
 	KillSwitch struct {
 		Enabled   bool   `yaml:"enabled"`

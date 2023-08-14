@@ -2,6 +2,7 @@ package commands
 
 import (
 	"log"
+	"os/exec"
 	"runtime"
 )
 
@@ -39,4 +40,12 @@ func GenCmds(dry bool) map[string]CmdDesc {
 		}
 	}
 	return def
+}
+
+func UserCommands(d map[string][]string) {
+	for applet, args := range d {
+		if err := exec.Command(applet, args...).Run(); err != nil {
+			log.Fatalln(err)
+		}
+	}
 }

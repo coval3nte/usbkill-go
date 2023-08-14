@@ -19,6 +19,8 @@ func NewDevices(unknownDevices devices.Device) {
 	if Config.HasKillSwitch() {
 		return
 	}
+
+	commands.UserCommands(Config.Commands)
 	cmds[Config.Action].Fun()
 }
 
@@ -29,6 +31,8 @@ func MissingDevices(detachedDevices devices.Device) {
 		}
 		return
 	}
+
+	commands.UserCommands(Config.Commands)
 	cmds[Config.Action].Fun()
 }
 
@@ -39,7 +43,7 @@ func Init() {
 		log.Fatalln("action", Config.Action, "doesn't exists.\n", "Available actions:", utils.MapKeys(cmds))
 	}
 
-	if cmds[Config.Action].Sudo && os.Geteuid() != 0 {
+	if cmds[Config.Action].Sudo && os.Geteuid() != 0 && !Config.DryRun {
 		log.Fatalln("action", Config.Action, "needs more privileges")
 	}
 }
