@@ -1,0 +1,12 @@
+dry-run: false
+action: poweroff
+whitelisted:
+    1234:1234: 1
+commands:
+    test:
+    touch:
+        - usbtest
+kill-switch:
+    enabled: false
+    product-id: abc
+    vendor-id: abc
